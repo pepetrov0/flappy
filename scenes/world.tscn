@@ -1,0 +1,148 @@
+[gd_scene load_steps=15 format=3 uid="uid://d3m0u4xaaxnt5"]
+
+[ext_resource type="Script" path="res://scripts/world.gd" id="1_n3ir3"]
+[ext_resource type="Texture2D" uid="uid://2dglo1fb6jny" path="res://sprites/background.png" id="2_b2c24"]
+[ext_resource type="Script" path="res://scripts/background.gd" id="2_f7rtn"]
+[ext_resource type="PackedScene" uid="uid://cnulq5j5dues2" path="res://scenes/player.tscn" id="2_kqaiv"]
+[ext_resource type="Script" path="res://scripts/timer.gd" id="2_y8lgs"]
+[ext_resource type="Script" path="res://scripts/pipes.gd" id="3_s574r"]
+[ext_resource type="Script" path="res://scripts/score.gd" id="7_0n5ns"]
+[ext_resource type="Script" path="res://scripts/initial.gd" id="7_0sxmi"]
+[ext_resource type="Texture2D" uid="uid://0bkfbtufrpef" path="res://sprites/message.png" id="7_gvyiq"]
+[ext_resource type="Texture2D" uid="uid://yf4cvobt3ypp" path="res://sprites/gameover.png" id="7_x37gj"]
+[ext_resource type="Script" path="res://scripts/gameover.gd" id="8_7vcrf"]
+[ext_resource type="FontFile" uid="uid://bg6rgs7ee1pa6" path="res://fonts/Orbitron-Bold.ttf" id="11_wrqkk"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7s1t5"]
+size = Vector2(1152, 648)
+
+[sub_resource type="LabelSettings" id="LabelSettings_yuul6"]
+font = ExtResource("11_wrqkk")
+font_size = 48
+outline_size = 12
+outline_color = Color(0, 0, 0, 1)
+shadow_size = 0
+
+[node name="world" type="Node2D"]
+position = Vector2(576, 324)
+script = ExtResource("1_n3ir3")
+
+[node name="timer" type="Timer" parent="."]
+wait_time = 3.0
+autostart = true
+script = ExtResource("2_y8lgs")
+
+[node name="world_bounds" type="Area2D" parent="."]
+visible = false
+
+[node name="collision_shape" type="CollisionShape2D" parent="world_bounds"]
+shape = SubResource("RectangleShape2D_7s1t5")
+
+[node name="background" type="Node2D" parent="."]
+visible = false
+script = ExtResource("2_f7rtn")
+
+[node name="sprite0" type="Sprite2D" parent="background"]
+texture_repeat = 2
+position = Vector2(-548.64, 0)
+scale = Vector2(1.27, 1.27)
+texture = ExtResource("2_b2c24")
+region_enabled = true
+region_rect = Rect2(0, 0, 288, 512)
+
+[node name="sprite1" type="Sprite2D" parent="background"]
+texture_repeat = 2
+position = Vector2(-182.88, 0)
+scale = Vector2(1.27, 1.27)
+texture = ExtResource("2_b2c24")
+region_enabled = true
+region_rect = Rect2(0, 0, 288, 512)
+
+[node name="sprite2" type="Sprite2D" parent="background"]
+texture_repeat = 2
+position = Vector2(182.88, 0)
+scale = Vector2(1.27, 1.27)
+texture = ExtResource("2_b2c24")
+region_enabled = true
+region_rect = Rect2(0, 0, 288, 512)
+
+[node name="sprite3" type="Sprite2D" parent="background"]
+texture_repeat = 2
+position = Vector2(548.64, 0)
+scale = Vector2(1.27, 1.27)
+texture = ExtResource("2_b2c24")
+region_enabled = true
+region_rect = Rect2(0, 0, 288, 512)
+
+[node name="camera" type="Camera2D" parent="."]
+
+[node name="audio_listener" type="AudioListener2D" parent="camera"]
+
+[node name="pipes" type="Node2D" parent="."]
+script = ExtResource("3_s574r")
+
+[node name="player" parent="." instance=ExtResource("2_kqaiv")]
+unique_name_in_owner = true
+scale = Vector2(1.5, 1.5)
+
+[node name="hud" type="CanvasLayer" parent="."]
+
+[node name="initial" type="Node2D" parent="hud"]
+position = Vector2(576, 324)
+script = ExtResource("7_0sxmi")
+
+[node name="flappy_bird" type="Sprite2D" parent="hud/initial"]
+position = Vector2(0, -235)
+scale = Vector2(3, 3)
+texture = ExtResource("7_gvyiq")
+region_enabled = true
+region_rect = Rect2(3, 0, 178, 48)
+
+[node name="get_ready" type="Sprite2D" parent="hud/initial"]
+position = Vector2(0, 262)
+scale = Vector2(2, 2)
+texture = ExtResource("7_gvyiq")
+region_enabled = true
+region_rect = Rect2(0, 102, 184, 50)
+
+[node name="tap" type="Sprite2D" parent="hud/initial"]
+position = Vector2(0, 105)
+scale = Vector2(2, 2)
+texture = ExtResource("7_gvyiq")
+region_enabled = true
+region_rect = Rect2(35, 207, 114, 60)
+
+[node name="gameover" type="Sprite2D" parent="hud"]
+visible = false
+position = Vector2(576, 324)
+scale = Vector2(2, 2)
+texture = ExtResource("7_x37gj")
+script = ExtResource("8_7vcrf")
+
+[node name="score" type="Label" parent="hud"]
+visible = false
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -113.0
+offset_top = -631.065
+offset_right = 113.0
+offset_bottom = -567.065
+grow_horizontal = 2
+grow_vertical = 0
+text = "00"
+label_settings = SubResource("LabelSettings_yuul6")
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("7_0n5ns")
+
+[connection signal="game_over_changed" from="." to="hud/gameover" method="_on_world_game_over_changed"]
+[connection signal="pause_changed" from="." to="timer" method="_on_world_pause_changed"]
+[connection signal="pause_changed" from="." to="player" method="_on_world_pause_changed"]
+[connection signal="pause_changed" from="." to="hud/initial" method="_on_world_pause_changed"]
+[connection signal="timeout" from="timer" to="pipes" method="_on_timer_timeout"]
+[connection signal="body_exited" from="world_bounds" to="player" method="_on_world_bounds_body_exited"]
+[connection signal="on_dead" from="player" to="." method="_on_player_on_dead"]
+[connection signal="score_updated" from="player" to="hud/score" method="_on_player_score_updated"]

@@ -1,0 +1,73 @@
+[gd_scene load_steps=11 format=3 uid="uid://cnulq5j5dues2"]
+
+[ext_resource type="Texture2D" uid="uid://cwtlt38ot1cel" path="res://sprites/yellowbird-midflap.png" id="1_5wdno"]
+[ext_resource type="Script" path="res://scripts/player.gd" id="1_wt3ni"]
+[ext_resource type="Texture2D" uid="uid://cwmghsyfw2k8o" path="res://sprites/yellowbird-upflap.png" id="3_0unlc"]
+[ext_resource type="Texture2D" uid="uid://cxlu2ykqnfggj" path="res://sprites/yellowbird-downflap.png" id="4_5umgq"]
+[ext_resource type="AudioStream" uid="uid://cx5v2a87qpjum" path="res://audio/wing.ogg" id="5_3jmyc"]
+[ext_resource type="AudioStream" uid="uid://dn1yy5cm3rw2g" path="res://audio/hit.ogg" id="6_10xfw"]
+[ext_resource type="AudioStream" uid="uid://cnqlq5irqkdwp" path="res://audio/die.ogg" id="7_2kfoh"]
+[ext_resource type="AudioStream" uid="uid://dy8553ctj67gm" path="res://audio/point.ogg" id="7_kbnbl"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_155dq"]
+radius = 12.0
+height = 32.0
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_0nsik"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_5wdno")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_0unlc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("1_5wdno")
+}],
+"loop": true,
+"name": &"falling",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_5umgq")
+}, {
+"duration": 1.0,
+"texture": ExtResource("1_5wdno")
+}],
+"loop": true,
+"name": &"rising",
+"speed": 5.0
+}]
+
+[node name="player" type="CharacterBody2D"]
+script = ExtResource("1_wt3ni")
+metadata/_edit_group_ = true
+
+[node name="collision_shape" type="CollisionShape2D" parent="."]
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_155dq")
+
+[node name="sprite" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_0nsik")
+animation = &"rising"
+
+[node name="sounds" type="Node2D" parent="."]
+
+[node name="wing" type="AudioStreamPlayer" parent="sounds"]
+stream = ExtResource("5_3jmyc")
+
+[node name="hit" type="AudioStreamPlayer" parent="sounds"]
+stream = ExtResource("6_10xfw")
+
+[node name="die" type="AudioStreamPlayer" parent="sounds"]
+stream = ExtResource("7_2kfoh")
+
+[node name="point" type="AudioStreamPlayer" parent="sounds"]
+stream = ExtResource("7_kbnbl")
